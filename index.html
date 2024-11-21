@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator</title>
+    <title>Kalkulator dengan JavaScript</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -41,18 +41,24 @@
             font-size: 18px;
             border: none;
             border-radius: 5px;
-            background-color: #6991bd;
-            color: rgb(0, 0, 0);
+            background-color: #cc79c2;
+            color: white;
             cursor: pointer;
         }
         .button:active {
-            background-color: #0056b3;
+            background-color: #b866b1;
         }
         .button.special {
-            background-color: #c08dcc;
+            background-color: #a32387;
         }
         .button.special:active {
-            background-color: #000000;
+            background-color: #b866b1;
+        }
+        .button.clear {
+            background-color: #b866b1;
+        }
+        .button.clear:active {
+            background-color: #c500a4;
         }
     </style>
 </head>
@@ -74,43 +80,45 @@
             <button class="button" onclick="appendValue('-')">-</button>
             <button class="button" onclick="appendValue('0')">0</button>
             <button class="button" onclick="appendValue('.')">.</button>
-            <button class="button" onclick="clearDisplay()">C</button>
+            <button class="button clear" onclick="clearDisplay()">C</button>
             <button class="button" onclick="appendValue('+')">+</button>
-            <button class="button" onclick="deleteLast()">DEL</button>
             <button class="button special" onclick="calculate()">=</button>
+            <button class="button" onclick="removeLast()">←</button> <!-- Tombol Hapus -->
         </div>
     </div>
 
     <script>
+        // Menambahkan nilai ke display kalkulator
         function appendValue(value) {
             document.getElementById('display').value += value;
         }
 
+        // Menghapus semua nilai di display
         function clearDisplay() {
             document.getElementById('display').value = '';
         }
 
-        function deleteLast() {
+        // Menghitung hasil ekspresi dan menampilkan pesan "I LOVE U" atau "I MISS U"
+        function calculate() {
             const display = document.getElementById('display');
-            display.value = display.value.slice(0, -1); // Hapus karakter terakhir
+            const expression = display.value;
+            
+            try {
+                const result = eval(expression);
+                if (result % 2 === 0) {
+                    display.value = "I LOVE U";
+                } else {
+                    display.value = "I MISS U";
+                }
+            } catch (e) {
+                display.value = "Error!";
+            }
         }
 
-        function calculate() {
-            const expression = document.getElementById('display').value;
-
-            fetch('./calculate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ expression })
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('display').value = data.result;
-            })
-            .catch(error => {
-                alert('Error calculating expression');
-                console.error(error);
-            });
+        // Menghapus angka terakhir yang dimasukkan
+        function removeLast() {
+            const display = document.getElementById('display');
+            display.value = display.value.slice(0, -1);
         }
     </script>
 </body>
